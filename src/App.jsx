@@ -152,9 +152,12 @@ export default function Elpc() {
 
       {/* Link-urile din josul paginii */}
       <div className="bottom-links">
-        <p><a href="https://bosch-my.sharepoint.com/:b:/p/crc3clj/ETBj0i7dOB9MrZTIaoQiodUBwK04EGTdAc5SHmDYCT_4BA?e=Wwhbqn" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>How to make User settings for MFOx</a></p>
-        <p><a href="https://bosch-my.sharepoint.com/:b:/p/crc3clj/ERL_CS5zJ3NAmd9qitBui-MBRNkWEG0rGsnPIcpivhfnyg?e=nUnf9O" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>How to make tag mode settings</a></p>
-        <p><a href="https://pbi-reporting.bosch.com/reports/powerbi/CLJP_MFD/CljP-All/eLPC%20Weekly%20Report" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>Monthly realization report</a></p>
+        <p><a href="https://bosch-my.sharepoint.com/:b:/p/ceo6clj/EXj9aARocvFDrt5aRHVkImYBCYfu5GtYJNQu5zVCr-GhnQ?e=8UamGZ" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>How to get access to eLPC</a></p>
+        <p><a href="https://bosch-my.sharepoint.com/:b:/p/ceo6clj/ETWqMHRqHPBBo0F77VseFEwBoxXr4UWqjUfATps_86J9Sw?e=fmd2r6" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>How to make User settings for MFOx</a></p>
+        <p><a href="https://bosch-my.sharepoint.com/:b:/p/ceo6clj/EcdyZA0wEoxDiNxYumRnWCYB7HIVrm2v975BZ9fx_09rlQ?e=h1U3KG" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>How to make tag mode settings</a></p>
+        <p><a href="https://pbi-reporting.bosch.com/reports/powerbi/CLJP_MFD/CljP-All/eLPC%20Weekly%20Report" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>MSE Weekly LPC Report</a></p>
+        <p><a href="https://pbi-reporting.bosch.com/reports/powerbi/CLJP_MFD/CljP-All/eLPC%20Monthly%20Report" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>Monthly Realization Report</a></p>
+        <p><a href="https://pbi-reporting.bosch.com/reports/powerbi/CLJP_MFD/CljP-All/SuperOPL" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>SuperOPL Status Report</a></p>
       </div>
     </div>
   );
