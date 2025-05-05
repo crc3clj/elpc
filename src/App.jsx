@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import "./styles.css";
 
-// ID-ul Google Sheet
 const googleSheetId = "1E8CxbgIqomYX3VIJJSJTP2raqT8JmA_q5lG_N6e1Ggg";
 const departments = ["MOE1", "MOE2", "MOE3", "MOE4"];
 
@@ -11,7 +10,12 @@ const fetchAllData = async () => {
     const requests = departments.map(dep =>
       fetch(`https://docs.google.com/spreadsheets/d/${googleSheetId}/gviz/tq?tqx=out:csv&sheet=${dep}`)
         .then(response => response.text())
-        .then(text => text.split("\n").slice(1).map(row => row.split(",").map(cell => cell.replace(/['"]+/g, "").trim())))
+        .then(text =>
+          text
+            .split("\n")
+            .slice(1)
+            .map(row => row.split(",").map(cell => cell.replace(/['"]+/g, "").trim()))
+        )
         .then(rows => ({ department: dep, data: rows }))
     );
     return Promise.all(requests);
@@ -21,9 +25,9 @@ const fetchAllData = async () => {
   }
 };
 
-const getUniqueValues = (array) => [...new Set(array.filter(item => item && item.trim() !== ""))];
+const getUniqueValues = array => [...new Set(array.filter(item => item && item.trim() !== ""))];
 
-const getShift = (currentTime) => {
+const getShift = currentTime => {
   const hours = currentTime.getHours();
   if (hours >= 6 && hours < 14) return 1;
   if (hours >= 14 && hours < 22) return 2;
@@ -43,6 +47,8 @@ export default function Elpc() {
   const [qrData, setQrData] = useState([]);
   const [currentDay, setCurrentDay] = useState("");
   const [shift, setShift] = useState(1);
+  const [applicableFunctions, setApplicableFunctions] = useState([]);
+  const [selectedOthers, setSelectedOthers] = useState("");
 
   useEffect(() => {
     fetchAllData().then(setAllData);
@@ -54,8 +60,8 @@ export default function Elpc() {
       localStorage.setItem("selectedSheet", selectedSheet);
       const sheetData = allData.find(sheet => sheet.department === selectedSheet)?.data || [];
       setFilteredData(sheetData);
-      const functions = getUniqueValues(sheetData.map(row => row[0]));
-      setFilteredFunctions(functions);
+      setFilteredFunctions(getUniqueValues(sheetData.map(row => row[0])));
+      setApplicableFunctions(getUniqueValues(sheetData.flatMap(row => row.slice(8, 14))));
     }
   }, [selectedSheet, allData]);
 
@@ -76,36 +82,59 @@ export default function Elpc() {
   }, [selectedHall, filteredData]);
 
   useEffect(() => {
-    const currentShift = getShift(new Date());
+    const currentShift = selectedFunction === "MFO-FM" ? 1 : getShift(new Date());
     setShift(currentShift);
 
-    if (selectedLine) {
+    let rowsForQrGeneration = [];
+
+    // Dacă s-a selectat 'Others', actualizează lista de QR-uri
+    if (selectedOthers) {
       const filtered = filteredData.filter(row =>
-        row[0] === selectedFunction && row[1] === selectedHall && row[2] === selectedLine && row[3] === currentShift.toString()
+        row[1] === selectedHall &&
+        row[2] === selectedLine &&
+        row.slice(8, 14).includes(selectedOthers)
       );
 
-      const rowsForQrGeneration = [];
       filtered.forEach(row => {
         const qrCount = parseInt(row[4], 10) || 0;
         const rowIndex = filteredData.indexOf(row);
-
         for (let i = 0; i < qrCount; i++) {
           const qrRow = filteredData[rowIndex + i];
           if (qrRow) {
-            const dayOfWeek = qrRow[5]?.toLowerCase().trim();
-            if (dayOfWeek === currentDay.toLowerCase()) {
-              rowsForQrGeneration.push({
-                name: qrRow[6]?.trim() || "Unnamed",
-                link: qrRow[7]?.trim() || "#"
-              });
-            }
+            rowsForQrGeneration.push({
+              name: qrRow[6]?.trim() || "Unnamed",
+              link: qrRow[7]?.trim() || "#"
+            });
           }
         }
       });
+    } else if (selectedLine) {
+      const filtered = filteredData.filter(row =>
+        row[0] === selectedFunction &&
+        row[1] === selectedHall &&
+        row[2] === selectedLine &&
+        row[3] === currentShift.toString()
+      );
 
-      setQrData(rowsForQrGeneration);
+      filtered.forEach(row => {
+        const qrCount = parseInt(row[4], 10) || 0;
+        const rowIndex = filteredData.indexOf(row);
+        for (let i = 0; i < qrCount; i++) {
+          const qrRow = filteredData[rowIndex + i];
+          if (qrRow?.[5]?.toLowerCase().trim() === currentDay.toLowerCase()) {
+            rowsForQrGeneration.push({
+              name: qrRow[6]?.trim() || "Unnamed",
+              link: qrRow[7]?.trim() || "#"
+            });
+          }
+        }
+      });
     }
-  }, [selectedLine, selectedHall, selectedFunction, filteredData, currentDay]);
+
+    // elimină duplicate după `link` și `name`
+    const uniqueQrData = Array.from(new Map(rowsForQrGeneration.map(item => [item.link + item.name, item])).values());
+    setQrData(uniqueQrData);
+  }, [selectedLine, selectedHall, selectedFunction, selectedOthers, filteredData, currentDay]);
 
   return (
     <div className="body">
@@ -135,6 +164,13 @@ export default function Elpc() {
             {filteredLines.map((line, index) => <option key={index} value={line}>{line}</option>)}
           </select>
         )}
+
+        {applicableFunctions.length > 0 && (
+          <select className="select-dropdown" value={selectedOthers} onChange={(e) => setSelectedOthers(e.target.value)}>
+            <option value="">Others</option>
+            {applicableFunctions.map((val, index) => <option key={index} value={val}>{val}</option>)}
+          </select>
+        )}
       </div>
 
       {qrData.length > 0 && (
@@ -150,11 +186,13 @@ export default function Elpc() {
         </div>
       )}
 
-      {/* Link-urile din josul paginii */}
       <div className="bottom-links">
-        <p><a href="https://bosch-my.sharepoint.com/:b:/p/crc3clj/ETBj0i7dOB9MrZTIaoQiodUBwK04EGTdAc5SHmDYCT_4BA?e=Wwhbqn" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>How to make User settings for MFOx</a></p>
-        <p><a href="https://bosch-my.sharepoint.com/:b:/p/crc3clj/ERL_CS5zJ3NAmd9qitBui-MBRNkWEG0rGsnPIcpivhfnyg?e=nUnf9O" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>How to make tag mode settings</a></p>
-        <p><a href="https://pbi-reporting.bosch.com/reports/powerbi/CLJP_MFD/CljP-All/eLPC%20Weekly%20Report" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>Monthly realization report</a></p>
+        <p><a href="https://bosch-my.sharepoint.com/:b:/p/ceo6clj/EXj9aARocvFDrt5aRHVkImYBCYfu5GtYJNQu5zVCr-GhnQ?e=8UamGZ" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>How to get access to eLPC</a></p>
+        <p><a href="https://bosch-my.sharepoint.com/:b:/p/ceo6clj/ETWqMHRqHPBBo0F77VseFEwBoxXr4UWqjUfATps_86J9Sw?e=fmd2r6" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>How to make User settings for MFOx</a></p>
+        <p><a href="https://bosch-my.sharepoint.com/:b:/p/ceo6clj/EcdyZA0wEoxDiNxYumRnWCYB7HIVrm2v975BZ9fx_09rlQ?e=h1U3KG" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>How to make tag mode settings</a></p>
+        <p><a href="https://pbi-reporting.bosch.com/reports/powerbi/CLJP_MFD/CljP-All/eLPC%20Weekly%20Report" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>MSE Weekly LPC Report</a></p>
+        <p><a href="https://pbi-reporting.bosch.com/reports/powerbi/CLJP_MFD/CljP-All/eLPC%20Monthly%20Report" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>Monthly Realization Report</a></p>
+        <p><a href="https://pbi-reporting.bosch.com/reports/powerbi/CLJP_MFD/CljP-All/SuperOPL" target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>SuperOPL Status Report</a></p>
       </div>
     </div>
   );
