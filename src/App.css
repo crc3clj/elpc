@@ -40,3 +40,10 @@
 .read-the-docs {
   color: #888;
 }
+
+.select-dropdown {
+  min-width: 280px;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+}

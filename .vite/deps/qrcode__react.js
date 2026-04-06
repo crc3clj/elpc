@@ -1,7 +1,7 @@
 import {
   __toESM,
   require_react
-} from "./chunk-5WQJO2FO.js";
+} from "./chunk-UUTY7ZA5.js";
 
 // node_modules/qrcode.react/lib/esm/index.js
 var import_react = __toESM(require_react());
@@ -877,14 +877,14 @@ function useQRCode({
     calculatedImageSettings
   };
 }
-var SUPPORTS_PATH2D = function() {
+var SUPPORTS_PATH2D = (function() {
   try {
     new Path2D().addPath(new Path2D());
   } catch (e) {
     return false;
   }
   return true;
-}();
+})();
 var QRCodeCanvas = import_react.default.forwardRef(
   function QRCodeCanvas2(props, forwardedRef) {
     const _a = props, {

@@ -40,11 +40,10 @@ body, html {
 
 /* Stilizare pentru dropdown-uri */
 .select-dropdown {
-  flex: 1;
-  min-width: 150px;
-  max-width: 250px;
+  min-width: 200px;
+  max-width: none;
   padding: 12px;
-  font-size: 16px;
+  font-size: 14px;
   border: 2px solid #389cdc;
   border-radius: 5px;
   background-color: #389cdc;
@@ -55,6 +54,23 @@ body, html {
   margin: 10px;
 }
 
+/* Stilizare pentru reset button */
+.select-reset-selections {
+  min-width: 200px;
+  max-width: none;
+  padding: 12px;
+  font-size: 14px;
+  border: 2px solid #90EE90;
+  border-radius: 5px;
+  background-color: #72E972;
+  color: white;
+  cursor: pointer;
+  outline: none;
+  text-align: center;
+  margin: 10px;
+}
+
+
 /* Efect hover pe dropdown-uri */
 .select-dropdown:hover {
   background-color: #2f85c7;
@@ -64,6 +80,15 @@ body, html {
 .select-dropdown option {
   background-color: white;
   color: black;
+}
+
+/* Focus valid pentru butoane și select-uri - evidențiere clară, accesibilă */
+button:focus,
+button:focus-visible,
+select:focus,
+select:focus-visible {
+  outline: 2px solid #389cdc;
+  outline-offset: 2px;
 }
 
 /* Container pentru codurile QR */
@@ -88,12 +113,6 @@ body, html {
 /* Efect hover pe QR box */
 .qr-box:hover {
   transform: scale(1.1);
-}
-
-/* Stilizare pentru imaginea din header */
-.header-image img {
-  width: 100%;
-  height: auto;
 }
 
 /* Stilizare pentru secțiunea de link-uri din footer */
@@ -122,4 +141,13 @@ body, html {
 
 .bottom-links a:hover {
   color: #004a99;
+}
+
+
+.top-right-email {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
 }
