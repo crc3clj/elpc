@@ -1,31 +1,49 @@
 import React, { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import "./styles.css";
+import * as XLSX from "xlsx";
 
-const googleSheetId = "1chhUlbYXtZBKcAfecLLuPFsTYwCLEbGS-17u94TdMtE";
 const departments = ["MOE1", "MOE2", "MOE3", "MOE4"];
-
 const fetchAllData = async () => {
+  const base = import.meta.env.BASE_URL;
+const filePath = `${base}data/eLPC.xlsx`;
+
   try {
-    const requests = departments.map(dep =>
-      fetch(`https://docs.google.com/spreadsheets/d/${googleSheetId}/gviz/tq?tqx=out:csv&sheet=${dep}`)
-        .then(response => response.text())
-        .then(text =>
-          text
-            .split("\n")
-            .slice(1)
-            .map(row => row.split(",").map(cell => cell.replace(/['"]+/g, "").trim()))
-        )
-        .then(rows => ({ department: dep, data: rows }))
-    );
-    return Promise.all(requests);
+    const res = await fetch(filePath);
+    const arrayBuffer = await res.arrayBuffer();
+
+    const workbook = XLSX.read(arrayBuffer, { type: "array" });
+
+    const result = workbook.SheetNames.map(sheetName => {
+      const sheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+      // skip header row (la fel ca înainte)
+      const rows = jsonData
+        .slice(1)
+        .map(row =>
+          row.map(cell =>
+            cell !== null && cell !== undefined
+              ? String(cell).replace(/['"]+/g, "").trim()
+              : ""
+          )
+        );
+
+      return {
+        department: sheetName, // numele sheet-ului = "CSV-ul"
+        data: rows
+      };
+    });
+
+    return result;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error loading Excel file:", error);
     return [];
   }
 };
 
-const getUniqueValues = array => [...new Set(array.filter(item => item && item.trim() !== ""))];
+const getUniqueValues = array =>
+  [...new Set(array.filter(item => item && item.trim() !== ""))];
 
 const getShift = currentTime => {
   const hours = currentTime.getHours();
