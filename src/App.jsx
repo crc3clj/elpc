@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Elpc from "./ELPC";
+import Elpc from "./Elpc";
 import Editor from "./Editor";
 
 export default function App() {
