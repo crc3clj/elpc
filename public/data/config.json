@@ -1,3 +1,4 @@
 {
-  "dataPath": "eLPC.xlsx"
+  "dataPath": "eLPC.xlsx",
+  "apiUrl": "http://localhost:3001"
 }
