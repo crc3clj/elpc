@@ -41,11 +41,11 @@ app.post("/save-excel", (req, res) => {
     }
 
     // 📌 CONFIG din public/data
-    const configPath = path.resolve("public/data/config.json");
+    const configPath = path.resolve("../public/data/config.json");
     const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
 
     // 📌 EXCEL din public/data
-    const filePath = path.resolve("public/data", config.dataPath);
+    const filePath = path.resolve("../public/data", config.dataPath);
 
     if (!fs.existsSync(filePath)) {
       console.log("❌ File not found:", filePath);
