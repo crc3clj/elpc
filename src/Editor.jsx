@@ -18,21 +18,25 @@ export default function Editor() {
   const [changes, setChanges] = useState([]);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
-  // 📥 Load Excel
   useEffect(() => {
     const loadExcel = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.BASE_URL}server/data/eLPC.xlsx`
-        );
+        const base = import.meta.env.BASE_URL;
 
+        const configRes = await fetch(`${import.meta.env.BASE_URL}data/config.json`);
+        const config = await configRes.json();
+
+        const filePath = `${import.meta.env.BASE_URL}data/${config.dataPath}`;
+
+        const res = await fetch(filePath);
         const buffer = await res.arrayBuffer();
+
         const wb = XLSX.read(buffer, { type: "array" });
 
         setWorkbook(wb);
         setSheetNames(wb.SheetNames);
       } catch (err) {
-        console.error("Eroare Excel:", err);
+        console.error("Excel load error:", err);
       }
     };
 
@@ -168,25 +172,25 @@ export default function Editor() {
 
       </div>
       {
-    toast.show && (
-      <div
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          padding: "10px 16px",
-          borderRadius: "6px",
-          color: "#fff",
-          background: toast.type === "success" ? "#22c55e" : "#ef4444",
-          fontSize: "14px",
-          boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-          zIndex: 9999
-        }}
-      >
-        {toast.message}
-      </div>
-    )
-  }
+        toast.show && (
+          <div
+            style={{
+              position: "fixed",
+              bottom: "20px",
+              right: "20px",
+              padding: "10px 16px",
+              borderRadius: "6px",
+              color: "#fff",
+              background: toast.type === "success" ? "#22c55e" : "#ef4444",
+              fontSize: "14px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+              zIndex: 9999
+            }}
+          >
+            {toast.message}
+          </div>
+        )
+      }
 
       {/* LOADING */}
       {loading && (
@@ -378,5 +382,5 @@ export default function Editor() {
       )}
     </div>
 
-  ); 
+  );
 }

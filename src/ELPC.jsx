@@ -6,14 +6,16 @@ import * as XLSX from "xlsx";
 
 const departments = ["MOE1", "MOE2", "MOE3", "MOE4"];
 const fetchAllData = async () => {
-const base = import.meta.env.BASE_URL;
-
-const configRes = await fetch(`${base}server/data/config.json`);
-const config = await configRes.json();
-
-const filePath = `${base}server/data/${config.dataPath}`;
+  const base = import.meta.env.BASE_URL;
 
   try {
+    // CONFIG din public/data
+    const configRes = await fetch(`${base}data/config.json`);
+    const config = await configRes.json();
+
+    // EXCEL din public/data
+    const filePath = `${base}data/${config.dataPath}`;
+
     const res = await fetch(filePath);
     const arrayBuffer = await res.arrayBuffer();
 
@@ -23,7 +25,6 @@ const filePath = `${base}server/data/${config.dataPath}`;
       const sheet = workbook.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-      // skip header row 
       const rows = jsonData
         .slice(1)
         .map(row =>
@@ -35,7 +36,7 @@ const filePath = `${base}server/data/${config.dataPath}`;
         );
 
       return {
-        department: sheetName, // sheet name = department name
+        department: sheetName,
         data: rows
       };
     });
