@@ -47,3 +47,19 @@
   font-size: 14px;
   border-radius: 4px;
 }
+
+
+.filter-dropdown {
+  font-size: 11px;
+  margin-top: 4px;
+  padding: 2px 4px;
+  height: 24px;
+  background-color: #FFC300;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+input {
+  color: #000 !important;
+}

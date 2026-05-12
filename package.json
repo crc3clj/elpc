@@ -13,9 +13,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "file-saver": "^2.0.5",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.14.2",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

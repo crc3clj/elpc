@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 
-// https://vite.dev/config/
-export default defineConfig({
-  base: 'CRC3CLJ/elpc/',  // Numele repository-ului tău
-  plugins: [react()]
-})
+export default defineConfig(({ command }) => ({
+  base: command === 'serve' ? '/' : '/elpc/',
+  plugins: [react()],
+  server: {
+    open: true
+  }
+}))
