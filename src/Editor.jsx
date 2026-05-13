@@ -26,7 +26,7 @@ export default function Editor() {
         const configRes = await fetch(`${import.meta.env.BASE_URL}data/config.json`);
         const config = await configRes.json();
 
-        const filePath = `${import.meta.env.BASE_URL}data/${config.dataPath}`;
+        const filePath = config.dataPath;
 
         const res = await fetch(filePath);
         const buffer = await res.arrayBuffer();

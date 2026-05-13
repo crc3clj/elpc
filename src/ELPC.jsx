@@ -14,7 +14,7 @@ const fetchAllData = async () => {
     const config = await configRes.json();
 
     // EXCEL din public/data
-    const filePath = `${base}data/${config.dataPath}`;
+    const filePath = config.dataPath;
 
     const res = await fetch(filePath);
     const arrayBuffer = await res.arrayBuffer();
