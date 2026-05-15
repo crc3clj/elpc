@@ -92,7 +92,7 @@ export default function Elpc() {
       );
 
       setApplicableFunctions(
-        getUniqueValues(sheetData.flatMap(row => row.slice(8, 50))).filter(val => val !== "MFO-SL")
+        getUniqueValues(sheetData.flatMap(row => row.slice(8, 50))).filter(val => val !== "MFO-SL" && val !== "MFO-FM")
       );
     }
   }, [selectedSheet, allData]);

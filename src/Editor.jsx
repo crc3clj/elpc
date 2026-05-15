@@ -117,7 +117,7 @@ export default function Editor() {
   };
   const handleSave = async () => {
     try {
-      const configRes = await fetch(`${import.meta.env.BASE_URL}data/config.json`);
+      const configRes = await fetch("/config.json");
       const config = await configRes.json();
 
       await fetch(`${config.apiUrl}/save-excel`, {
