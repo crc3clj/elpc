@@ -346,27 +346,133 @@ export default function Editor() {
             >
               <thead>
                 <tr>
-                  {headers.map(
-                    (h, i) => (
-                      <th
-                        key={i}
+                  {headers.map((h, i) => (
+                    <th
+                      key={i}
+                      style={{
+                        position: "sticky",
+                        top: 0,
+                        background: "#f2f2f2",
+                        border: "1px solid #ccc",
+                        minWidth: "140px",
+                        padding: "4px",
+                        color: "black"
+                      }}
+                    >
+                      <div
                         style={{
-                          border:
-                            "1px solid #ccc",
-                          padding: 4,
-                          minWidth: 140,
-                          background:
-                            "#f2f2f2",
-                          color:
-                            "black"
+                          position: "relative",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center"
                         }}
                       >
-                        {h ||
-                          `Col ${i + 1
-                          }`}
-                      </th>
-                    )
-                  )}
+                        <div style={{ fontWeight: "bold" }}>
+                          {h || `Col ${i + 1}`}
+                        </div>
+
+                        {/* FILTER BUTTON */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenFilter(
+                              openFilter === i
+                                ? null
+                                : i
+                            );
+                          }}
+                          style={{
+                            width: 18,
+                            height: 18,
+                            fontSize: 10,
+                            borderRadius: 4,
+                            border: "1px solid #ccc",
+                            background:
+                              openFilter === i
+                                ? "#2563eb"
+                                : "#fff",
+                            color:
+                              openFilter === i
+                                ? "#fff"
+                                : "#333",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center"
+                          }}
+                        >
+                          ⏷
+                        </button>
+
+                        {/* DROPDOWN */}
+                        {openFilter === i && (
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: "100%",
+                              right: 0,
+                              background: "#fff",
+                              border:
+                                "1px solid #d1d5db",
+                              borderRadius: 8,
+                              zIndex: 1000,
+                              maxHeight: 220,
+                              overflowY: "auto",
+                              width: 200,
+                              boxShadow:
+                                "0 10px 25px rgba(0,0,0,0.15)"
+                            }}
+                          >
+                            <div
+                              onClick={() => {
+                                handleFilterChange(
+                                  i,
+                                  ""
+                                );
+
+                                setOpenFilter(
+                                  null
+                                );
+                              }}
+                              style={{
+                                padding:
+                                  "8px 10px",
+                                cursor: "pointer"
+                              }}
+                            >
+                              All
+                            </div>
+
+                            {getUniqueValues(i).map(
+                              (val, idx) => (
+                                <div
+                                  key={idx}
+                                  onClick={() => {
+                                    handleFilterChange(
+                                      i,
+                                      val
+                                    );
+
+                                    setOpenFilter(
+                                      null
+                                    );
+                                  }}
+                                  style={{
+                                    padding:
+                                      "8px 10px",
+                                    cursor:
+                                      "pointer"
+                                  }}
+                                >
+                                  {val}
+                                </div>
+                              )
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </th>
+                  ))}
                 </tr>
               </thead>
 
